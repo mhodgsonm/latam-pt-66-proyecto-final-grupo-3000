@@ -25,6 +25,24 @@ def handle_login():
     access_token = create_access_token(identity=str(user.id))
     return jsonify({"token": access_token, "user_id": user.id}), 200
 
+@api.route('/registro', methods=['POST'])
+def handle_registro():
+    email = request.json.get("email", None)
+    password = request.json.get("password", None)
+
+    if not email or not password:
+        return jsonify({"msg": "Email y contraseña son requeridos"}), 400
+
+    existing_user = User.query.filter_by(email=email).first()
+    if existing_user:
+        return jsonify({"msg": "El email ya está registrado"}), 409
+
+    new_user = User(email=email, password=password, is_active=True)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({"msg": "Usuario creado exitosamente"}), 201
+
 @api.route('/hello', methods=['GET'])
 def handle_hello():
 

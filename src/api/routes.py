@@ -60,8 +60,7 @@ def handle_signup():
     except Exception as e:
         db.session.rollback()
         return jsonify({"msg": "Error de servidor", "error": str(e)}), 500
-=======
-    return jsonify(response_body), 200
+        return jsonify(response_body), 200
 
 
 
@@ -80,4 +79,4 @@ def handle_create_habit():
     return jsonify(new_habit.serialize()), 201
 
  
->>>>>>> 6fa6b72ed509bec3d4f77018d53a42bde79a8116
+

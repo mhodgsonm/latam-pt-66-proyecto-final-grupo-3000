@@ -9,9 +9,14 @@ import { Home } from "./pages/Home";
 import { Single } from "./pages/Single";
 import { Demo } from "./pages/Demo";
 import { Login } from "./pages/Login.jsx";
+ main
 import { Registro } from "./pages/Registro.jsx";
 import { Habitos } from "./pages/Habitos.jsx";
 
+
+import { Registro } from "./pages/Registro.jsx"; // <--- 1. IMPORTACIÓN AGREGADA
+import { HabitsPage } from "./Habit.jsx"; // <--- 1. IMPORTACIÓN AGREGAD
+main
 export const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />} errorElement={<h1>Not found!</h1>} >

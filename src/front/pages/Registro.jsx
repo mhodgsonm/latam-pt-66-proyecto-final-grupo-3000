@@ -8,7 +8,7 @@ export const Registro = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         const response = await fetch(import.meta.env.VITE_BACKEND_URL + "/api/signup", {
             method: "POST",
             headers: { "Content-Type": "application/json" },

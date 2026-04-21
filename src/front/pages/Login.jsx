@@ -21,7 +21,7 @@ export const Login = () => {
         if (response.ok) {
             const data = await response.json();
             sessionStorage.setItem("token", data.token);
-            sessionStorage.setItem("email", email);
+            sessionStorage.setItem("nombre", data.nombre);
             navigate("/habitos");
         } else {
             setError(true);

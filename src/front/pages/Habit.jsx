@@ -2,6 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Habit = () => {
+    const { store, actions } = useContext(Context);
     const navigate = useNavigate();
     const [habits, setHabits] = useState([]);
 
@@ -39,9 +40,8 @@ export const Habit = () => {
     }, []);
 
     return (
-        <div className="container mt-5 main_Habits">
+        <div className="container mt-5">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className="display-6">Mis Hábitos</h2>
                 <button
                     className="btn btn-outline-danger btn-sm"
                     onClick={() => {

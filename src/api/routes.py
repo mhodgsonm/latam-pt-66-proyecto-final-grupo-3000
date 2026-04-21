@@ -32,27 +32,32 @@ def handle_login():
 @api.route('/signup', methods=['POST'])
 def handle_signup():
     body = request.get_json()
+
+    # Validaciones básicas
     if body is None:
         return jsonify({"msg": "Cuerpo vacío"}), 400
-    
-    email = body.get("email")
-    password = body.get("password")
+    if 'email' not in body or 'password' not in body:
+        return jsonify({"msg": "Email y password requeridos"}), 400
 
-    if not email or not password:
-        return jsonify({"msg": "Email y password obligatorios"}), 400
-
-    user_exists = User.query.filter_by(email=email).first()
+    # Evitar duplicados
+    user_exists = User.query.filter_by(email=body['email']).first()
     if user_exists:
         return jsonify({"msg": "El usuario ya existe"}), 400
 
-    new_user = User(email=email, password=password, is_active=True)
+    # Crear y Guardar
+    new_user = User(
+        email=body['email'],
+        password=body['password'],
+        is_active=True
+    )
+
     try:
         db.session.add(new_user)
-        db.session.commit()
-        return jsonify({"msg": "Usuario creado"}), 201
+        db.session.commit() # <--- Aquí se guarda físicamente en el archivo .db
+        return jsonify({"msg": "Usuario creado correctamente"}), 201
     except Exception as e:
         db.session.rollback()
-        return jsonify({"msg": "Error de servidor", "error": str(e)}), 500
+        return jsonify({"msg": "Error al guardar"}), 500
 
 # 4. RUTA DE HÁBITOS
 @api.route('/habits', methods=['POST'])

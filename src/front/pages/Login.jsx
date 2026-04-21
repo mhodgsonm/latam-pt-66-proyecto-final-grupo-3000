@@ -28,18 +28,20 @@ export const Login = () => {
         if (response.ok) {
             const data = await response.json();
             sessionStorage.setItem("token", data.token);
-            sessionStorage.setItem("nombre", data.nombre);
+            sessionStorage.setItem("email", email);
+            sessionStorage.setItem("nombre", data.nombre || "");
 
             // Si "Recuérdame" está marcado, guardar token en localStorage
             if (rememberMe) {
                 localStorage.setItem("token", data.token);
-                localStorage.setItem("nombre", data.nombre);
+                localStorage.setItem("nombre", data.nombre || "");
+                localStorage.setItem("email", email);
             } else {
                 // Si no está marcado, limpiar localStorage
                 localStorage.removeItem("token");
                 localStorage.removeItem("nombre");
+                localStorage.removeItem("email");
             }
-
             navigate("/habitos");
         } else {
             showError();

@@ -48,6 +48,42 @@ def handle_registro():
     access_token = create_access_token(identity=str(new_user.id))
     return jsonify({"token": access_token, "user_id": new_user.id, "nombre": new_user.nombre}), 201
 
+# Compatibilidad con clientes antiguos que siguen usando /signup.
+@api.route('/signup', methods=['POST'])
+def handle_signup():
+    body = request.get_json()
+    if body is None:
+        return jsonify({"msg": "Cuerpo vacío"}), 400
+
+    nombre = body.get("nombre", "")
+    apellido = body.get("apellido", "")
+    email = body.get("email")
+    password = body.get("password")
+
+    if not email or not password:
+        return jsonify({"msg": "Email y password requeridos"}), 400
+
+    user_exists = User.query.filter_by(email=email).first()
+    if user_exists:
+        return jsonify({"msg": "El usuario ya existe"}), 400
+
+    new_user = User(
+        nombre=nombre,
+        apellido=apellido,
+        email=email,
+        password=password,
+        is_active=True
+    )
+
+    try:
+        db.session.add(new_user)
+        db.session.commit()
+        access_token = create_access_token(identity=str(new_user.id))
+        return jsonify({"token": access_token, "user_id": new_user.id, "nombre": new_user.nombre}), 201
+    except Exception:
+        db.session.rollback()
+        return jsonify({"msg": "Error al guardar"}), 500
+
 @api.route('/categorias', methods=['GET'])
 @jwt_required()
 def listar_categorias():

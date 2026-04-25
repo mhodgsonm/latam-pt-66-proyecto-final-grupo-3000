@@ -6,8 +6,6 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 api = Blueprint('api', __name__)
-
-# Allow CORS requests to this API
 CORS(api)
 
 
@@ -51,8 +49,6 @@ def handle_registro():
 
     access_token = create_access_token(identity=str(new_user.id))
     return jsonify({"token": access_token, "user_id": new_user.id, "nombre": new_user.nombre}), 201
-
-# Compatibilidad con clientes antiguos que siguen usando /signup.
 
 
 @api.route('/signup', methods=['POST'])

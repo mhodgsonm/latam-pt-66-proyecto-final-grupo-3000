@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Habito, HabitoRegistro, Categoria
+from api.models import db, User, Habitos as Habito, HabitoRegistro, Categoria
 import datetime
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -10,9 +10,11 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
     return jsonify({"message": "Conectado al Servidor Exitosamente"}), 200
+
 
 @api.route('/login', methods=['POST'])
 def handle_login():
@@ -26,6 +28,7 @@ def handle_login():
 
     access_token = create_access_token(identity=str(user.id))
     return jsonify({"token": access_token, "user_id": user.id, "nombre": user.nombre}), 200
+
 
 @api.route('/registro', methods=['POST'])
 def handle_registro():
@@ -41,7 +44,8 @@ def handle_registro():
     if user_exists:
         return jsonify({"msg": "El usuario ya existe"}), 400
 
-    new_user = User(nombre=nombre, apellido=apellido, email=email, password=password, is_active=True)
+    new_user = User(nombre=nombre, apellido=apellido,
+                    email=email, password=password, is_active=True)
     db.session.add(new_user)
     db.session.commit()
 
@@ -49,9 +53,11 @@ def handle_registro():
     return jsonify({"token": access_token, "user_id": new_user.id, "nombre": new_user.nombre}), 201
 
 # Compatibilidad con clientes antiguos que siguen usando /signup.
+
+
 @api.route('/signup', methods=['POST'])
 def handle_signup():
-    body = request.get_json() 
+    body = request.get_json()
     if body is None:
         return jsonify({"msg": "Cuerpo vacío"}), 400
 
@@ -84,12 +90,14 @@ def handle_signup():
         db.session.rollback()
         return jsonify({"msg": "Error al guardar"}), 500
 
+
 @api.route('/categorias', methods=['GET'])
 @jwt_required()
 def listar_categorias():
     user_id = get_jwt_identity()
     cats = Categoria.query.filter_by(user_id=user_id).all()
     return jsonify([c.serialize() for c in cats]), 200
+
 
 @api.route('/categorias', methods=['POST'])
 @jwt_required()
@@ -104,6 +112,7 @@ def crear_categoria():
     db.session.commit()
     return jsonify(cat.serialize()), 201
 
+
 @api.route('/categorias/<int:cat_id>', methods=['PUT'])
 @jwt_required()
 def editar_categoria(cat_id):
@@ -116,6 +125,7 @@ def editar_categoria(cat_id):
     db.session.commit()
     return jsonify(cat.serialize()), 200
 
+
 @api.route('/habitos', methods=['POST'])
 @jwt_required()
 def crear_habito():
@@ -127,11 +137,13 @@ def crear_habito():
     if not nombre:
         return jsonify({"msg": "El nombre del hábito es requerido"}), 400
 
-    habito = Habito(nombre=nombre, descripcion=descripcion, is_active=True, user_id=user_id, categoria_id=categoria_id)
+    habito = Habito(nombre=nombre, descripcion=descripcion,
+                    is_active=True, user_id=user_id, categoria_id=categoria_id)
     db.session.add(habito)
     db.session.commit()
 
     return jsonify(habito.serialize()), 201
+
 
 @api.route('/habitos', methods=['GET'])
 @jwt_required()
@@ -139,6 +151,7 @@ def listar_habitos():
     user_id = get_jwt_identity()
     habitos = Habito.query.filter_by(user_id=user_id, is_active=True).all()
     return jsonify([h.serialize() for h in habitos]), 200
+
 
 @api.route('/habitos/<int:habito_id>', methods=['PUT'])
 @jwt_required()
@@ -153,6 +166,7 @@ def editar_habito(habito_id):
     db.session.commit()
     return jsonify(habito.serialize()), 200
 
+
 @api.route('/habitos/<int:habito_id>', methods=['DELETE'])
 @jwt_required()
 def eliminar_habito(habito_id):
@@ -164,6 +178,7 @@ def eliminar_habito(habito_id):
     habito.is_active = False
     db.session.commit()
     return jsonify({"msg": "Hábito eliminado"}), 200
+
 
 @api.route('/habitos/<int:habito_id>/registro', methods=['POST'])
 @jwt_required()
@@ -177,15 +192,18 @@ def marcar_habito(habito_id):
         fecha = datetime.date.fromisoformat(fecha_str)
     else:
         fecha = datetime.date.today()
-    existente = HabitoRegistro.query.filter_by(habito_id=habito_id, fecha=fecha).first()
+    existente = HabitoRegistro.query.filter_by(
+        habito_id=habito_id, fecha=fecha).first()
     if existente:
         db.session.delete(existente)
         db.session.commit()
         return jsonify({"msg": "Registro eliminado", "fecha": fecha.isoformat(), "completado": False}), 200
-    registro = HabitoRegistro(habito_id=habito_id, fecha=fecha, completado=True)
+    registro = HabitoRegistro(
+        habito_id=habito_id, fecha=fecha, completado=True)
     db.session.add(registro)
     db.session.commit()
     return jsonify(registro.serialize()), 201
+
 
 @api.route('/habitos/<int:habito_id>/registros', methods=['GET'])
 @jwt_required()
@@ -197,12 +215,14 @@ def obtener_registros(habito_id):
     registros = HabitoRegistro.query.filter_by(habito_id=habito_id).all()
     return jsonify([r.serialize() for r in registros]), 200
 
+
 @api.route('/perfil', methods=['GET'])
 @jwt_required()
 def get_perfil():
     user_id = get_jwt_identity()
     user = User.query.get(user_id)
     return jsonify(user.serialize()), 200
+
 
 @api.route('/perfil', methods=['PUT'])
 @jwt_required()

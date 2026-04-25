@@ -51,7 +51,7 @@ def handle_registro():
 # Compatibilidad con clientes antiguos que siguen usando /signup.
 @api.route('/signup', methods=['POST'])
 def handle_signup():
-    body = request.get_json()
+    body = request.get_json() 
     if body is None:
         return jsonify({"msg": "Cuerpo vacío"}), 400
 

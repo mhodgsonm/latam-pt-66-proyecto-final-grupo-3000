@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 export const Footer = () => (
 	<footer className="py-3 bg-primary text-white text-center mt-5">
 		<div className="container">
@@ -6,6 +8,12 @@ export const Footer = () => (
 				<strong>Habit Tracker</strong> &copy; {new Date().getFullYear()}
 			</span>
 			<span>Construye mejores hábitos, un día a la vez.</span>
+			<div className="mt-3">
+				<Link to="/acercade" className="btn btn-outline-light btn-sm rounded-pill px-3">
+					Acerca de
+				</Link>
+
+			</div>
 		</div>
 	</footer>
 );

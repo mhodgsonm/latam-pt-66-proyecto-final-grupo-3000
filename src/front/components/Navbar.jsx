@@ -55,6 +55,22 @@ export const Navbar = () => {
                                     <i className="fa-solid fa-calendar-check me-1"></i>Historial
                                 </button>
                             </Link>
+<Link to="/exportar">
+								<button className="btn btn-outline-light btn-sm">
+									<i className="fa-solid fa-file-export me-1"></i>Exportar
+								</button>
+							</Link>
+							<Link to="/reconocimientos">
+								<button className="btn btn-outline-light btn-sm">
+									<i className="fa-solid fa-trophy me-1"></i>Logros
+								</button>
+							</Link>
+							<Link to="/perfil">
+								<button className="btn btn-outline-light btn-sm">
+									<i className="fa-solid fa-gear me-1"></i>Mi Perfil
+								</button>
+							</Link>
+
                             <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
                                 <i className="fa-solid fa-right-from-bracket me-1"></i>Cerrar Sesión
                             </button>

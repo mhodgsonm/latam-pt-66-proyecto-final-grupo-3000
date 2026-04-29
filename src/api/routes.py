@@ -1,11 +1,13 @@
-from flask import Flask, request, jsonify, url_for, Blueprint
+from flask import request, jsonify, Blueprint
 from api.models import db, User, Habito, HabitoRegistro, Categoria
-import datetime
-from api.utils import generate_sitemap, APIException
+from api.utils import APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from werkzeug.security import generate_password_hash, check_password_hash
+import datetime
 
 api = Blueprint('api', __name__)
+
 CORS(api)
 
 
@@ -19,9 +21,8 @@ def handle_login():
     email = request.json.get("email", None)
     password = request.json.get("password", None)
 
-    user = User.query.filter_by(email=email, password=password).first()
-
-    if user is None:
+    user = User.query.filter_by(email=email).first()
+    if user is None or not check_password_hash(user.password, password):
         return jsonify({"msg": "Email o contraseña incorrectas"}), 401
 
     access_token = create_access_token(identity=str(user.id))
@@ -38,12 +39,11 @@ def handle_registro():
     if not nombre or not apellido or not email or not password:
         return jsonify({"msg": "Todos los campos son requeridos"}), 400
 
-    user_exists = User.query.filter_by(email=email).first()
-    if user_exists:
+    if User.query.filter_by(email=email).first():
         return jsonify({"msg": "El usuario ya existe"}), 400
 
-    new_user = User(nombre=nombre, apellido=apellido,
-                    email=email, password=password, is_active=True)
+    new_user = User(nombre=nombre, apellido=apellido, email=email,
+                    password=generate_password_hash(password), is_active=True)
     db.session.add(new_user)
     db.session.commit()
 
@@ -65,18 +65,11 @@ def handle_signup():
     if not email or not password:
         return jsonify({"msg": "Email y password requeridos"}), 400
 
-    user_exists = User.query.filter_by(email=email).first()
-    if user_exists:
+    if User.query.filter_by(email=email).first():
         return jsonify({"msg": "El usuario ya existe"}), 400
 
-    new_user = User(
-        nombre=nombre,
-        apellido=apellido,
-        email=email,
-        password=password,
-        is_active=True
-    )
-
+    new_user = User(nombre=nombre, apellido=apellido, email=email,
+                    password=generate_password_hash(password), is_active=True)
     try:
         db.session.add(new_user)
         db.session.commit()
@@ -122,6 +115,14 @@ def editar_categoria(cat_id):
     return jsonify(cat.serialize()), 200
 
 
+@api.route('/habitos', methods=['GET'])
+@jwt_required()
+def listar_habitos():
+    user_id = get_jwt_identity()
+    habitos = Habito.query.filter_by(user_id=user_id, is_active=True).all()
+    return jsonify([h.serialize() for h in habitos]), 200
+
+
 @api.route('/habitos', methods=['POST'])
 @jwt_required()
 def crear_habito():
@@ -137,16 +138,7 @@ def crear_habito():
                     is_active=True, user_id=user_id, categoria_id=categoria_id)
     db.session.add(habito)
     db.session.commit()
-
     return jsonify(habito.serialize()), 201
-
-
-@api.route('/habitos', methods=['GET'])
-@jwt_required()
-def listar_habitos():
-    user_id = get_jwt_identity()
-    habitos = Habito.query.filter_by(user_id=user_id, is_active=True).all()
-    return jsonify([h.serialize() for h in habitos]), 200
 
 
 @api.route('/habitos/<int:habito_id>', methods=['PUT'])
@@ -170,7 +162,6 @@ def eliminar_habito(habito_id):
     habito = Habito.query.filter_by(id=habito_id, user_id=user_id).first()
     if not habito:
         return jsonify({"msg": "Hábito no encontrado"}), 404
-
     habito.is_active = False
     db.session.commit()
     return jsonify({"msg": "Hábito eliminado"}), 200
@@ -183,19 +174,17 @@ def marcar_habito(habito_id):
     habito = Habito.query.filter_by(id=habito_id, user_id=user_id).first()
     if not habito:
         return jsonify({"msg": "Hábito no encontrado"}), 404
+
     fecha_str = request.json.get("fecha", None)
-    if fecha_str:
-        fecha = datetime.date.fromisoformat(fecha_str)
-    else:
-        fecha = datetime.date.today()
-    existente = HabitoRegistro.query.filter_by(
-        habito_id=habito_id, fecha=fecha).first()
+    fecha = datetime.date.fromisoformat(fecha_str) if fecha_str else datetime.date.today()
+
+    existente = HabitoRegistro.query.filter_by(habito_id=habito_id, fecha=fecha).first()
     if existente:
         db.session.delete(existente)
         db.session.commit()
         return jsonify({"msg": "Registro eliminado", "fecha": fecha.isoformat(), "completado": False}), 200
-    registro = HabitoRegistro(
-        habito_id=habito_id, fecha=fecha, completado=True)
+
+    registro = HabitoRegistro(habito_id=habito_id, fecha=fecha, completado=True)
     db.session.add(registro)
     db.session.commit()
     return jsonify(registro.serialize()), 201
@@ -229,6 +218,6 @@ def editar_perfil():
     user.apellido = request.json.get("apellido", user.apellido)
     nueva_password = request.json.get("password", None)
     if nueva_password:
-        user.password = nueva_password
+        user.password = generate_password_hash(nueva_password)
     db.session.commit()
     return jsonify(user.serialize()), 200

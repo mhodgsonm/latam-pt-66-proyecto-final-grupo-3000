@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 // --- INICIO APORTE JHON: Importación corregida del hook ---
-import useGlobalReducer from "../hooks/useGlobalReducer"; 
+import useGlobalReducer from "../hooks/useGlobalReducer";
 // --- FIN APORTE JHON ---
 
 export const Navbar = () => {
@@ -9,7 +9,7 @@ export const Navbar = () => {
     // --- FIN APORTE JHON ---
 
     const navigate = useNavigate();
-    useLocation(); 
+    useLocation();
     const token = sessionStorage.getItem("token");
     const nombre = sessionStorage.getItem("nombre");
 
@@ -26,55 +26,64 @@ export const Navbar = () => {
                     <i className="fa-solid fa-list-check me-2"></i>Habit Tracker
                 </Link>
                 <div className="ms-auto d-flex align-items-center gap-2">
-                    
+
                     {/* --- INICIO APORTE JHON: Botón Modo Oscuro --- */}
-                    <button 
-                        className="btn btn-outline-light btn-sm me-3" 
+                    <button
+                        className="btn btn-outline-light btn-sm"
                         onClick={() => dispatch({ type: 'toggle_dark_mode' })}
                     >
                         {store.darkMode ? (
-                            <span><i className="fa-solid fa-sun me-1"></i>Modo Claro</span>
+                            <i className="fa-solid fa-sun"></i>
                         ) : (
-                            <span><i className="fa-solid fa-moon me-1"></i>Modo Oscuro</span>
+                            <i className="fa-solid fa-moon"></i>
                         )}
                     </button>
                     {/* --- FIN APORTE JHON --- */}
 
                     {token ? (
-                        <>
-                            <span className="navbar-text text-white me-1">
+                        <div className="dropdown">
+                            <button
+                                className="btn btn-outline-light btn-sm dropdown-toggle"
+                                type="button"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                            >
                                 <i className="fa-solid fa-user me-1"></i>{nombre}
-                            </span>
-                            <Link to="/habitos">
-                                <button className="btn btn-outline-light btn-sm">
-                                    <i className="fa-solid fa-list-check me-1"></i>Mis Hábitos
-                                </button>
-                            </Link>
-                            <Link to="/historial">
-                                <button className="btn btn-outline-light btn-sm">
-                                    <i className="fa-solid fa-calendar-check me-1"></i>Historial
-                                </button>
-                            </Link>
-<Link to="/exportar">
-								<button className="btn btn-outline-light btn-sm">
-									<i className="fa-solid fa-file-export me-1"></i>Exportar
-								</button>
-							</Link>
-							<Link to="/reconocimientos">
-								<button className="btn btn-outline-light btn-sm">
-									<i className="fa-solid fa-trophy me-1"></i>Logros
-								</button>
-							</Link>
-							<Link to="/perfil">
-								<button className="btn btn-outline-light btn-sm">
-									<i className="fa-solid fa-gear me-1"></i>Mi Perfil
-								</button>
-							</Link>
-
-                            <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                                <i className="fa-solid fa-right-from-bracket me-1"></i>Cerrar Sesión
                             </button>
-                        </>
+                            <ul className="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <Link className="dropdown-item" to="/habitos">
+                                        <i className="fa-solid fa-list-check me-2"></i>Mis Hábitos
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" to="/historial">
+                                        <i className="fa-solid fa-calendar-check me-2"></i>Historial
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" to="/exportar">
+                                        <i className="fa-solid fa-file-export me-2"></i>Exportar
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" to="/reconocimientos">
+                                        <i className="fa-solid fa-trophy me-2"></i>Logros
+                                    </Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item" to="/perfil">
+                                        <i className="fa-solid fa-gear me-2"></i>Mi Perfil
+                                    </Link>
+                                </li>
+                                <li><hr className="dropdown-divider" /></li>
+                                <li>
+                                    <button className="dropdown-item text-danger" onClick={handleLogout}>
+                                        <i className="fa-solid fa-right-from-bracket me-2"></i>Cerrar Sesión
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
                     ) : (
                         <>
                             <Link to="/login">

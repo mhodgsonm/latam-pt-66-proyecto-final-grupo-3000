@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export const Ayuda = () => {
     return (
         <div className="container mt-5 pt-5 mb-5">
-            <h1 className="text-center mb-4">Centro de Ayuda</h1>
+            <h1 className="text-center mb-4">Preguntas Frecuentes</h1>
             <p className="text-center text-muted mb-5">¿Tienes dudas sobre cómo usar Habit Tracker? Aquí te respondemos.</p>
 
             <div className="accordion shadow-sm" id="accordionExample">

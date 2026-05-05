@@ -22,7 +22,6 @@ export const Navbar = () => {
                 </Link>
                 <div className="ms-auto d-flex align-items-center gap-2">
 
-                    {/* BOTONES DE JHON */}
                     <Link to="/suscripciones">
                         <button className="btn btn-warning btn-sm fw-bold">
                             {store.plan === 'premium' ? "Plan Premium" : "Planes"}
@@ -33,9 +32,12 @@ export const Navbar = () => {
                         className="btn btn-outline-light btn-sm"
                         onClick={() => dispatch({ type: 'toggle_dark_mode' })}
                     >
-                        <i className={store.darkMode ? "fa-solid fa-sun" : "fa-solid fa-moon"}></i>
+                        {store.darkMode ? (
+                            <i className="fa-solid fa-sun"></i>
+                        ) : (
+                            <i className="fa-solid fa-moon"></i>
+                        )}
                     </button>
-                    {/* --------------- */}
 
                     {token ? (
                         <div className="dropdown">
@@ -46,24 +48,6 @@ export const Navbar = () => {
                                 aria-expanded="false"
                             >
                                 <i className="fa-solid fa-user me-1"></i>{nombre}
-                            </button>
-                            <Link to="/habitos">
-                                <button className="btn btn-outline-light btn-sm">Mis Hábitos</button>
-                            </Link>
-                            <Link to="/historial">
-                                <button className="btn btn-outline-light btn-sm">Historial</button>
-                            </Link>
-                            <Link to="/exportar">
-                                <button className="btn btn-outline-light btn-sm">Exportar</button>
-                            </Link>
-                            <Link to="/reconocimientos">
-                                <button className="btn btn-outline-light btn-sm">Logros</button>
-                            </Link>
-                            <Link to="/perfil">
-                                <button className="btn btn-outline-light btn-sm">Mi Perfil</button>
-                            </Link>
-                            <button className="btn btn-outline-light btn-sm" onClick={handleLogout}>
-                                <i className="fa-solid fa-right-from-bracket"></i>
                             </button>
                             <ul className="dropdown-menu dropdown-menu-end">
                                 <li>

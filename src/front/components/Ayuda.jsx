@@ -4,25 +4,26 @@ import { Link } from "react-router-dom";
 export const Ayuda = () => {
     return (
         <div className="container mt-5 pt-5 mb-5">
-            <h1 className="text-center mb-4">Centro de Ayuda</h1>
+            <h1 className="text-center mb-4 mt-5">Centro de Ayuda</h1>
             <p className="text-center text-muted mb-5">¿Tienes dudas sobre cómo usar Habit Tracker? Aquí te respondemos.</p>
 
             <div className="accordion shadow-sm" id="accordionExample">
-                {/* Pregunta 1 */}
+
+                {/* Pregunta 1: Registro */}
                 <div className="accordion-item">
                     <h2 className="accordion-header">
-                        <button className="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
                             ¿Cómo empiezo a registrar mis hábitos?
                         </button>
                     </h2>
-                    <div id="collapseOne" className="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                    <div id="collapseOne" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
-                            Es muy fácil. Solo haz clic en el botón <strong>"Comenzar gratis"</strong>, inicia sesión y verás tu tablero principal donde podrás añadir nuevas metas.
+                            Es muy fácil. Solo haz clic en el botón <strong>"Comenzar gratis"</strong>, inicia sesión y verás tu tablero principal.
                         </div>
                     </div>
                 </div>
 
-                {/* Pregunta 2 */}
+                {/* Pregunta 2: Exportar  */}
                 <div className="accordion-item">
                     <h2 className="accordion-header">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
@@ -31,30 +32,45 @@ export const Ayuda = () => {
                     </h2>
                     <div id="collapseTwo" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
-                            Sí, dentro de tu perfil encontrarás la opción de <strong>Exportar</strong>. Esto generará un archivo PDF con tus estadísticas gracias a nuestra integración con <code>jsPDF</code>.
+                            Sí, en tu perfil encontrarás la opción de <strong>Exportar</strong> para generar un PDF con tus estadísticas.
                         </div>
                     </div>
                 </div>
 
-                {/* Pregunta 3 */}
+                {/* Pregunta 3: Historial */}
                 <div className="accordion-item">
                     <h2 className="accordion-header">
                         <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
-                            ¿La aplicación es gratuita?
+                            <i className="fa-solid fa-clock-rotate-left me-2 text-primary"></i>
+                            ¿Dónde puedo ver mi Historial de actividades?
                         </button>
                     </h2>
                     <div id="collapseThree" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
                         <div className="accordion-body">
-                            Actualmente, todas las funciones de <strong>Habit Tracker</strong> son totalmente gratuitas como parte de nuestra versión 1.0.
+                            Puedes acceder a tu historial desde el menú desplegable en tu perfil (esquina superior derecha).
                         </div>
                     </div>
                 </div>
+
+                {/* Pregunta 4: Logros */}
+                <div className="accordion-item">
+                    <h2 className="accordion-header">
+                        <button className="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            <i className="fa-solid fa-trophy me-2 text-warning"></i>
+                            ¿Cómo funcionan los Logros obtenidos?
+                        </button>
+                    </h2>
+                    <div id="collapseFour" className="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                        <div className="accordion-body">
+                            Los logros son medallas que desbloqueas al mantener rachas de hábitos saludables.
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div className="mt-5 text-center">
-                <Link to="/" className="btn btn-outline-primary">
-                    <i className="fa-solid fa-house me-2"></i> Volver al Inicio
-                </Link>
+                <Link to="/" className="btn btn-primary px-4">Volver al Inicio</Link>
             </div>
         </div>
     );

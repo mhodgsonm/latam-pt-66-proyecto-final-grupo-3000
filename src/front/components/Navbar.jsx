@@ -1,13 +1,8 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-// --- INICIO APORTE JHON: Importación corregida del hook ---
 import useGlobalReducer from "../hooks/useGlobalReducer";
-// --- FIN APORTE JHON ---
 
 export const Navbar = () => {
-    // --- INICIO APORTE JHON: Uso del reducer global ---
     const { store, dispatch } = useGlobalReducer();
-    // --- FIN APORTE JHON ---
-
     const navigate = useNavigate();
     useLocation();
     const token = sessionStorage.getItem("token");
@@ -27,7 +22,12 @@ export const Navbar = () => {
                 </Link>
                 <div className="ms-auto d-flex align-items-center gap-2">
 
-                    {/* --- INICIO APORTE JHON: Botón Modo Oscuro --- */}
+                    <Link to="/suscripciones">
+                        <button className="btn btn-warning btn-sm fw-bold">
+                            {store.plan === 'premium' ? "Plan Premium" : "Planes"}
+                        </button>
+                    </Link>
+
                     <button
                         className="btn btn-outline-light btn-sm"
                         onClick={() => dispatch({ type: 'toggle_dark_mode' })}
@@ -38,7 +38,6 @@ export const Navbar = () => {
                             <i className="fa-solid fa-moon"></i>
                         )}
                     </button>
-                    {/* --- FIN APORTE JHON --- */}
 
                     {token ? (
                         <div className="dropdown">
